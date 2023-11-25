@@ -229,28 +229,13 @@ async function sendLogger(level: LogLevel, user: User, options: LoggerOptions) {
 		}`;
 
 		// Post content to channels without waiting for asynchronous processing
-		try {
-			logChannel.send({
-				content: `${line}\n${title}\n${actionUser}\n${status}\n${actionName}\n${agent}\n${message}\n${datetime}`,
-				...options.sendToLogChannel.options,
-			});
-			return {
-				isError: false,
-			};
-		} catch (e: unknown) {
-			if (e instanceof Error) {
-				print(level, user, {
-					...options,
-					title: 'Log Error',
-					status: 'Error',
-					message: e.message,
-				});
-				return {
-					isError: true,
-					...e,
-				};
-			}
-		}
+		logChannel.send({
+			content: `${line}\n${title}\n${actionUser}\n${status}\n${actionName}\n${agent}\n${message}\n${datetime}`,
+			...options.sendToLogChannel.options,
+		});
+		return {
+			isError: false,
+		};
 	} catch (e: unknown) {
 		if (e instanceof Error) {
 			print(level, user, {
