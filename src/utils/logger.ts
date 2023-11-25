@@ -240,7 +240,7 @@ async function sendLogger(level: LogLevel, user: User, options: LoggerOptions) {
 		if (e instanceof Error) {
 			print(level, user, {
 				...options,
-				title: 'Log Error',
+				title: 'Send Logger Error',
 				status: 'Error',
 				message: e.message,
 			});
