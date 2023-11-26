@@ -1,5 +1,10 @@
 import { DiscordAPIError, type Interaction } from 'discord.js';
 
+/**
+ * @description Actions registered onGetModals
+ **/
+export type OnGetModalsActionNames = 'onGetModalAction1';
+
 const onGetModals = async (interaction: Interaction) => {
 	if (!interaction.isModalSubmit()) return;
 	try {

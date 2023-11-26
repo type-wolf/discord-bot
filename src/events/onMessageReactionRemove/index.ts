@@ -1,5 +1,10 @@
 import { MessageReaction, User, DiscordAPIError, type PartialMessageReaction, type PartialUser, type Client } from 'discord.js';
 
+/**
+ * @description Actions registered onMessageReactionRemove
+ **/
+export type OnMessageReactionRemoveActionNames = 'onMessageReactionRemoveAction1';
+
 export type OnMessaageReactionRemoveOptions = {
 	//
 };

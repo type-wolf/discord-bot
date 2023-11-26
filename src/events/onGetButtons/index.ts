@@ -1,5 +1,10 @@
 import { DiscordAPIError, type Interaction } from 'discord.js';
 
+/**
+ * @description Actions registered onGetButtons
+ **/
+export type OnGetButtonsActionNames = 'onGetButtonAction1';
+
 const onGetButtons = async (interaction: Interaction) => {
 	if (!interaction.isButton()) return;
 	try {

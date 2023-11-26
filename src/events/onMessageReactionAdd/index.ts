@@ -1,5 +1,10 @@
 import { MessageReaction, User, DiscordAPIError, type PartialMessageReaction, type PartialUser } from 'discord.js';
 
+/**
+ * @description Actions registered onMessageReactionAdd
+ **/
+export type OnMessageReactionAddActionNames = 'onMessageReactionAddActon1';
+
 export type OnMessageReactionAddOptions = {
 	//
 };

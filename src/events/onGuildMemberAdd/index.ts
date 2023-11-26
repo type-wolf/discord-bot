@@ -1,5 +1,10 @@
 import { DiscordAPIError, type GuildMember } from 'discord.js';
 
+/**
+ * @description Actions registered onGuildMemberAdd
+ **/
+export type OnGuildMemberAddActionNames = 'onGuildMemberAddAction1';
+
 export type OnGuildMemberAddOptions = {
 	//
 };

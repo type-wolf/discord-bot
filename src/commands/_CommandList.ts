@@ -4,6 +4,11 @@ import type { OnInteractionOptions } from '../events/onInteraction';
 
 import command from './sample';
 
+/**
+ * @description Actions registered onInteraction
+ **/
+export type OnInteractionActionNames = 'command_name';
+
 type CommandBuilderProps = Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'> | SlashCommandSubcommandsOnlyBuilder;
 
 type CommandRunProps = (interaction: CommandInteraction, options?: OnInteractionOptions) => Promise<void>;

@@ -16,6 +16,25 @@ import onGuildScheduledEventCreate from './events/onGuildScheduledEventCreate';
 import onGuildScheduledEventUpdate from './events/onGuildScheduledEventUpdate';
 import onGuildScheduledEventDelete from './events/onGuildScheduledEventDelete';
 
+/**
+ * @description Event handlers registered for this bot
+ **/
+export type EventNames =
+	| 'onReady'
+	| 'onInteraction'
+	| 'onGetButtons'
+	| 'onGetSelectMenus'
+	| 'onGetModals'
+	| 'onGuildMemberAdd'
+	| 'onMessageCreate'
+	| 'onMessageDelete'
+	| 'onMessageReactionAdd'
+	| 'onMessageReactionRemove'
+	| 'onGuildMemberUpdate'
+	| 'onGuildScheduledEventCreate'
+	| 'onGuildScheduledEventUpdate'
+	| 'onGuildScheduledEventDelete';
+
 (async () => {
 	if (!validateEnv()) return;
 	const BOT = new Client({ intents: IntentOptions });

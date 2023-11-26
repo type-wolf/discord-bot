@@ -1,5 +1,10 @@
 import { Message, DiscordAPIError, type PartialMessage } from 'discord.js';
 
+/**
+ * @description Actions registered onMessageDelete
+ **/
+export type OnMessageDeleteActionNames = 'onMessageDeleteAction1';
+
 export type OnMessageDeleteOptions = {
 	//
 };

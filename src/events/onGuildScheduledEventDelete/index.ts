@@ -1,5 +1,10 @@
 import { DiscordAPIError, type GuildScheduledEvent } from 'discord.js';
 
+/**
+ * @description Actions registered onGuildScheduledEventDalete
+ **/
+export type OnGuildScheduledEventDeleteActionNames = 'onGuildScheduledEventDaleteActon1';
+
 export type OnGuildScheduledEventDeleteOptions = {
 	//
 };

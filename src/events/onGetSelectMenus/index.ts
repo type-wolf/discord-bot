@@ -1,5 +1,10 @@
 import { DiscordAPIError, type Interaction } from 'discord.js';
 
+/**
+ * @description Actions registered onGetSelectMenus
+ **/
+export type OnGetSelectMenusActionNames = 'onGetSelectMenuAction1';
+
 const onGetSelectMenus = async (interaction: Interaction) => {
 	if (!interaction.isSelectMenu()) return;
 	try {

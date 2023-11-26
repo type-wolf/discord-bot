@@ -1,5 +1,10 @@
 import { DiscordAPIError, type Message } from 'discord.js';
 
+/**
+ * @description Actions registered onMessageCreate
+ **/
+export type OnMessageCreateActionNames = 'onMessageCreateAction1';
+
 export type OnMessageCreateOptions = {
 	//
 };
