@@ -16,48 +16,64 @@ enum LogLevel {
 
 export type Status = 'Info' | 'Success' | 'Warning' | 'Error' | 'Debug';
 
+/**
+ * Defines the options for customizing log messages in the Logger class.
+ */
 export type LoggerOptions = {
 	/**
-	 * @description Title of this log
-	 **/
+	 * The title of the log message.
+	 */
 	title?: string;
 
 	/**
-	 * @description Status indicated by this log
-	 **/
+	 * The status level of the log, which can be 'Info', 'Success', 'Warning', 'Error', or 'Debug'.
+	 */
 	status?: Status;
 
 	/**
-	 * @description Event indicated by this log
-	 **/
+	 * The name of the event associated with the log.
+	 */
 	eventName?: EventNames;
 
 	/**
-	 * @description The action that triggered this log to be performed
-	 **/
+	 * The name of the action that triggered the log.
+	 */
 	actionName?: ActionNames;
 
 	/**
-	 * @description Message to be displayed in the log
-	 **/
+	 * The main message content of the log.
+	 */
 	message?: string;
 
 	/**
-	 * @description Agents that have performed actions (mobile, PC, app, browser, etc.)
-	 **/
+	 * Identifies the agent (e.g., mobile, PC, app, browser) that performed the actions leading to the log.
+	 */
 	agent?: string;
 
 	/**
-	 * @description Date to be set in the log (if from, this Class will get it)
-	 **/
+	 * The date and time when the log was created. If not provided, the class will generate it.
+	 */
 	datetime?: string;
 
 	/**
-	 * @description Set if you want to post this record to Discord's LogChannel
-	 **/
+	 * Optional settings for posting the log to a Discord channel.
+	 * If set, the log is posted to the specified `guild` and `channel`.
+	 */
 	sendToLogChannel?: {
+		/**
+		 * The guild where the log should be posted. If null, the submission is aborted.
+		 */
 		guild: Guild | null;
+
+		/**
+		 * The specific channel within the guild where the log should be posted.
+		 * Can be either a `TextChannel` object or a channel ID string.
+		 */
 		channel?: TextChannel | string;
+
+		/**
+		 * Additional Discord message options, such as embeds, components, files, and attachments.
+		 */
 		options?: {
 			embed?: MessageOptions['embeds'];
 			components?: MessageOptions['components'];
