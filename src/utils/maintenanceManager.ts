@@ -1,4 +1,5 @@
-import { type EventNames } from '..';
+import type { ClientUser, PartialUser, User } from 'discord.js';
+import type { EventNames } from '..';
 import type { OnReadyActionNames } from '../events/onReady';
 import type { OnInteractionActionNames } from '../commands/_CommandList';
 import type { OnGetButtonsActionNames } from '../events/onGetButtons';
@@ -13,6 +14,8 @@ import type { OnGuildMemberUpdateActionNames } from '../events/onGuildMemberUpda
 import type { OnGuildScheduledEventCreateActionNames } from '../events/onGuildScheduledEventCreate';
 import type { OnGuildScheduledEventUpdateActionNames } from '../events/onGuildScheduledEventUpdate';
 import type { OnGuildScheduledEventDeleteActionNames } from '../events/onGuildScheduledEventDelete';
+import Logger, { type LoggerOptions } from './logger';
+import { MAINTENANCE } from '../constants/message';
 
 /**
  * @description Actions for all registered events
@@ -195,6 +198,64 @@ class MaintenanceManager {
 		return statusMap;
 	}
 }
+
+export type MaintenanceHandlerOptions = LoggerOptions & {
+	user?: User | ClientUser | PartialUser;
+};
+
+/**
+ * Handles the maintenance check for a given event and optionally an action, logging information if necessary.
+ *
+ * @template E - An event name that extends from the defined `EventNames`.
+ * @template A - An action name that extends from the keys of `EventActions[E]`.
+ * @param {E} event - The event name to check for maintenance.
+ * @param {A | MaintenanceHandlerOptions} [action] - The action name associated with the event or the options for handling maintenance.
+ * @param {MaintenanceHandlerOptions} [options] - Optional parameters, including LoggerOptions and user details.
+ * @returns {boolean} True if the event (and optionally the action) is under maintenance, otherwise false.
+ *
+ * This function checks if the specified event (and optionally an action) is under maintenance. It supports two modes of operation:
+ * 1. When the second argument is a string (action name), it checks if the specific action of the event is under maintenance.
+ * 2. When the second argument is an object (options), it checks if the event itself is under maintenance.
+ *
+ * If the event/action is under maintenance and a user is specified in the options, it logs this information using Logger.
+ * The function returns true if the event/action is under maintenance, otherwise false.
+ */
+export function maintenanceHandler<E extends EventNames, A extends keyof EventActions[E]>(
+	event: E,
+	action?: A | MaintenanceHandlerOptions,
+	options?: MaintenanceHandlerOptions
+) {
+	if (typeof action === 'string') {
+		const isMaintenance = maintenanceManager.isActionInMaintenance(event, action);
+		if (isMaintenance && options && options.user) {
+			Logger.info(options.user, {
+				...options,
+				title: options.title || MAINTENANCE.title.en,
+				status: options.status || 'Info',
+				eventName: options.eventName || event,
+				// Memo: Since action is guaranteed to be ActionName, type casting is performed
+				actionName: options.actionName || (action as ActionNames),
+				message: options.message || MAINTENANCE.toMessage(event, action).en,
+			});
+		}
+		return isMaintenance;
+	}
+	if (typeof action === 'object') {
+		const isMaintenance = maintenanceManager.isEventInMaintenance(event);
+		if (isMaintenance && action && action.user) {
+			Logger.info(action.user, {
+				...action,
+				title: action.title || MAINTENANCE.title.en,
+				status: action.status || 'Info',
+				eventName: action.eventName || event,
+				message: action.message || MAINTENANCE.toMessage(event).en,
+			});
+		}
+		return isMaintenance;
+	}
+	return maintenanceManager.isEventInMaintenance(event);
+}
+
 const maintenanceManager = new MaintenanceManager();
 
 export default maintenanceManager;
