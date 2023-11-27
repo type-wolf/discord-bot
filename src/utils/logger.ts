@@ -56,7 +56,7 @@ export type LoggerOptions = {
 	 * @description Set if you want to post this record to Discord's LogChannel
 	 **/
 	sendToLogChannel?: {
-		guild: Guild;
+		guild: Guild | null;
 		channel?: TextChannel | string;
 		options?: {
 			embed?: MessageOptions['embeds'];
@@ -200,6 +200,17 @@ async function sendLogger(level: LogLevel, user: User | ClientUser | PartialUser
 	try {
 		// Determine which channel to post logs on
 		if (!options?.sendToLogChannel) throw new Error('sendLogToChannel is undefind');
+
+		// If Guild is null, the submission will be aborted
+		if (!options.sendToLogChannel.guild) {
+			print(level, user, {
+				...options,
+				title: 'Stop Submission',
+				status: 'Warning',
+				message: `"Guild" is null, so I stopped submitting`,
+			});
+			return;
+		}
 
 		const logChannel =
 			options.sendToLogChannel.channel instanceof TextChannel
