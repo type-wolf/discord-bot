@@ -68,19 +68,15 @@ export type LoggerOptions = {
 };
 
 /**
- * ------------------------------------------
- * @name - Logger
- * ------------------------------------------
- * @description - Simply output data and status to the console
- * ------------------------------------------
- * @param - level: Receive log level (importance)
- * ------------------------------------------
- * @param - user: Receive complete user object
- * ------------------------------------------
- * @param - options?: Arbitrary arguments that this event receives
- * ------------------------------------------
- **/
+ * Logger class for outputting various levels of logs to the console and optionally to a Discord log channel.
+ */
 export default class Logger {
+	/**
+	 * Logs a message with a specified log level, user, and optional additional options.
+	 * @param {LogLevel} level - The log level (e.g., INFO, SUCCESS, WARNING, ERROR, DEBUG).
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 */
 	static log(level: LogLevel, user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		print(level, user, options);
 		if (options?.sendToLogChannel) {
@@ -90,45 +86,69 @@ export default class Logger {
 		return;
 	}
 
+	/**
+	 * Logs an informational message.
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 */
 	static info(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.INFO, user, options);
 	}
 
+	/**
+	 * Logs a success message.
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 */
 	static success(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.SUCCESS, user, options);
 	}
 
+	/**
+	 * Logs a debug message.
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 */
 	static debug(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.DEBUG, user, options);
 	}
 
+	/**
+	 * Logs a warning message.
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 */
 	static warning(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.WARNING, user, options);
 	}
 
+	/**
+	 * Logs an error message.
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 */
 	static error(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.ERROR, user, options);
 	}
 }
 
-/**
- * @description Visually pleasing exterior lines on PC and mobile
- **/
 const line = `----------------------------------`;
 
 /**
- * ------------------------------------------
- * @name - print
- * ------------------------------------------
- * @description - Simply output data and status to the console
- * ------------------------------------------
- * @param - level: Receive log level (importance)
- * ------------------------------------------
- * @param - user: Receive complete user object
- * ------------------------------------------
- * @param - options?: Arbitrary arguments that this event receives
- * ------------------------------------------
- **/
+ * Outputs a formatted log message to the console based on the provided log level, user, and optional logger options.
+ *
+ * @param {LogLevel} level - The log level for the message.
+ * @param {User | ClientUser | PartialUser} user - The user associated with the log message.
+ * @param {LoggerOptions} [options] - Optional parameters to customize the log message.
+ *
+ * This function formats a log message including details like the user's ID, username, the specified status, event name, action name, agent, message, and datetime. It then outputs the message to the console using an appropriate console method based on the specified status in options (if any). The status can be 'Info', 'Success', 'Warning', 'Error', or 'Debug', and if no status is specified, the default `console.log` is used.
+ *
+ * - If `options.status` is 'Info', `console.info` is used.
+ * - If `options.status` is 'Success', `console.log` is used.
+ * - If `options.status` is 'Warning', `console.warn` is used.
+ * - If `options.status` is 'Error', `console.error` is used.
+ * - If `options.status` is 'Debug', `console.debug` is used.
+ */
 function print(level: LogLevel, user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 	// Generate content
 	const emoji =
@@ -182,18 +202,22 @@ function print(level: LogLevel, user: User | ClientUser | PartialUser, options?:
 }
 
 /**
- * ------------------------------------------
- * @name - sendLogger
- * ------------------------------------------
- * @description - Flexibly post log details to Discord's Channel
- * ------------------------------------------
- * @param - level: Receive log level (importance)
- * ------------------------------------------
- * @param - user: Receive complete user object
- * ------------------------------------------
- * @param - options?: Arbitrary arguments that this event receives
- * ------------------------------------------
- **/
+ * Asynchronously posts log details to a specified Discord channel.
+ *
+ * @param {LogLevel} level - The log level for the message.
+ * @param {User | ClientUser | PartialUser} user - The user associated with the log message.
+ * @param {LoggerOptions} options - Parameters to customize the log message, including Discord channel details.
+ *
+ * This function posts a formatted log message to a Discord channel specified in the `options.sendToLogChannel`. It constructs a message including user, status, event name, action name, agent, message, and datetime details. If the guild or channel is not correctly specified in the options, it logs a warning or error message using the `print` function.
+ *
+ * The function handles the following scenarios:
+ * - If `options.sendToLogChannel` is not defined or `options.sendToLogChannel.guild` is null, it logs a warning and aborts the submission.
+ * - If the specified Discord channel is not found or undefined, it throws an error.
+ * - On successful execution, it returns an object with `isError` set to false.
+ * - In case of an exception, it logs the error and returns an object with `isError` set to true and includes the error details.
+ *
+ * @returns An object indicating whether an error occurred during the log submission.
+ */
 async function sendLogger(level: LogLevel, user: User | ClientUser | PartialUser, options: LoggerOptions) {
 	const toInlineStr = (str: string | number) => `\`${str}\``;
 
