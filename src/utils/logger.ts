@@ -1,6 +1,8 @@
-import { type Guild, TextChannel, type User, type MessageOptions } from 'discord.js';
+import { type Guild, TextChannel, type User, type ClientUser, type PartialUser, type MessageOptions } from 'discord.js';
 import getDatetime from './getDatetime';
 import getChannelsWithCache from './getChannels';
+import type { EventNames } from '..';
+import type { ActionNames } from './maintenanceManager';
 import { LOGCHANNEL_ID } from '../constants/id';
 import { WHITE_CHECK_MARK, WARNING, ROTATING_LIGHT } from '../constants/emoji';
 
@@ -26,9 +28,14 @@ export type LoggerOptions = {
 	status?: Status;
 
 	/**
+	 * @description Event indicated by this log
+	 **/
+	eventName?: EventNames;
+
+	/**
 	 * @description The action that triggered this log to be performed
 	 **/
-	actionName?: string;
+	actionName?: ActionNames;
 
 	/**
 	 * @description Message to be displayed in the log
@@ -74,7 +81,7 @@ export type LoggerOptions = {
  * ------------------------------------------
  **/
 export default class Logger {
-	static log(level: LogLevel, user: User, options?: LoggerOptions) {
+	static log(level: LogLevel, user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		print(level, user, options);
 		if (options?.sendToLogChannel) {
 			const res = sendLogger(level, user, options);
@@ -83,23 +90,23 @@ export default class Logger {
 		return;
 	}
 
-	static info(user: User, options?: LoggerOptions) {
+	static info(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.INFO, user, options);
 	}
 
-	static success(user: User, options?: LoggerOptions) {
+	static success(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.SUCCESS, user, options);
 	}
 
-	static debug(user: User, options?: LoggerOptions) {
+	static debug(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.DEBUG, user, options);
 	}
 
-	static warning(user: User, options?: LoggerOptions) {
+	static warning(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.WARNING, user, options);
 	}
 
-	static error(user: User, options?: LoggerOptions) {
+	static error(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 		Logger.log(LogLevel.ERROR, user, options);
 	}
 }
@@ -122,7 +129,7 @@ const line = `----------------------------------`;
  * @param - options?: Arbitrary arguments that this event receives
  * ------------------------------------------
  **/
-function print(level: LogLevel, user: User, options?: LoggerOptions) {
+function print(level: LogLevel, user: User | ClientUser | PartialUser, options?: LoggerOptions) {
 	// Generate content
 	const emoji =
 		options?.status === 'Info'
@@ -140,11 +147,12 @@ function print(level: LogLevel, user: User, options?: LoggerOptions) {
 	const actionUser = `ActionUser: ${user.id}`;
 	const actionUserTag = `ActionUserTag: ${user.tag || user.username}`;
 	const status = `Status: ${options?.status || level}`;
+	const eventName = `EventName: ${options?.eventName || '-'}`;
 	const actionName = `ActionName: ${options?.actionName || '-'}`;
 	const agent = `Agent: ${options?.agent || '-'}`;
 	const message = `Message: ${options?.message || '-'}`;
 	const datetime = `Datetime: ${options?.datetime || getDatetime()?.datetime.format('yyyy/LL/dd/HH:mm:ss')}`;
-	const content = `${line}\n${title}\n${actionUser}\n${actionUserTag}\n${status}\n${actionName}\n${agent}\n${message}\n${datetime}`;
+	const content = `${line}\n${title}\n${actionUser}\n${actionUserTag}\n${status}\n${eventName}\n${actionName}\n${agent}\n${message}\n${datetime}`;
 
 	// Output switched by status
 	if (!options?.status) {
@@ -186,7 +194,7 @@ function print(level: LogLevel, user: User, options?: LoggerOptions) {
  * @param - options?: Arbitrary arguments that this event receives
  * ------------------------------------------
  **/
-async function sendLogger(level: LogLevel, user: User, options: LoggerOptions) {
+async function sendLogger(level: LogLevel, user: User | ClientUser | PartialUser, options: LoggerOptions) {
 	const toInlineStr = (str: string | number) => `\`${str}\``;
 
 	try {
@@ -221,6 +229,7 @@ async function sendLogger(level: LogLevel, user: User, options: LoggerOptions) {
 		const title = `${emoji}${options.title || 'No Title'}`;
 		const actionUser = `${toInlineStr('ActionUser')}: <@${user.id}>`;
 		const status = `${toInlineStr('Status')}: ${options.status || level}`;
+		const eventName = `${toInlineStr('EventName')}: ${options.eventName || '-'}`;
 		const actionName = `${toInlineStr('ActionName')}: ${options.actionName || '-'}`;
 		const agent = `${toInlineStr('Agent')}: ${options.agent || '-'}`;
 		const message = `${toInlineStr('Message')}: ${options.message || '-'}`;
@@ -230,7 +239,7 @@ async function sendLogger(level: LogLevel, user: User, options: LoggerOptions) {
 
 		// Post content to channels without waiting for asynchronous processing
 		logChannel.send({
-			content: `${line}\n${title}\n${actionUser}\n${status}\n${actionName}\n${agent}\n${message}\n${datetime}`,
+			content: `${line}\n${title}\n${actionUser}\n${status}\n${eventName}\n${actionName}\n${agent}\n${message}\n${datetime}`,
 			...options.sendToLogChannel.options,
 		});
 		return {
