@@ -5,6 +5,7 @@ export type DatetimeFormat =
 	| 'yyyy年LL月dd日(EEE) HH時mm分ss秒'
 	| 'yyyy年LL月dd日HH時mm分ss秒'
 	| 'yyyy/LL/dd/HH:mm:ss'
+	| 'yyyy-LL-dd-HH:mm:ss'
 	| 'yyyyMMddHHmmss';
 
 export type GetDatetimeOptions = {
