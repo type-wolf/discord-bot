@@ -9,7 +9,7 @@ const validateEnv = () => {
 	}
 	if (!process.env.GUILD_ID) {
 		console.warn(
-			'[x] worker > Could not identify the Guild in which DiscordBot is participating. \n => `process.env.GUILD_ID` is not set.',
+			'[x] worker > Could not identify the Guild in which DiscordBot is participating. \n => `process.env.GUILD_ID` is not set.'
 		);
 		return false;
 	}
