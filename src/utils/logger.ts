@@ -2,48 +2,61 @@ import { type Guild, TextChannel, type User, type ClientUser, type PartialUser, 
 import getDatetime from './getDatetime';
 import getChannelsWithCache from './getChannels';
 import type { EventNames } from '..';
-import type { ActionNames } from './maintenanceManager';
+import type { EventActions } from './maintenanceManager';
 import { LOGCHANNEL_ID } from '../constants/id';
-import { WHITE_CHECK_MARK, WARNING, ROTATING_LIGHT } from '../constants/emoji';
+import { MIDGET_LAMP, WHITE_CHECK_MARK, WARNING, ROTATING_LIGHT, X, HAMMER } from '../constants/emoji';
 
 enum LogLevel {
 	INFO = 'INFO',
 	SUCCESS = 'SUCCESS',
 	WARNING = 'WARNING',
+	DENGER = 'DENGER',
 	ERROR = 'ERROR',
 	DEBUG = 'DEBUG',
 }
 
-export type Status = 'Info' | 'Success' | 'Warning' | 'Error' | 'Debug';
+const STATSU_EMOJI_MAP = {
+	INFO: MIDGET_LAMP,
+	SUCCESS: WHITE_CHECK_MARK,
+	WARNING: WARNING,
+	DENGER: ROTATING_LIGHT,
+	ERROR: X,
+	DEBUG: HAMMER,
+};
 
 /**
  * Defines the options for customizing log messages in the Logger class.
  */
-export type LoggerOptions = {
-	/**
-	 * The title of the log message.
-	 */
-	title?: string;
-
-	/**
-	 * The status level of the log, which can be 'Info', 'Success', 'Warning', 'Error', or 'Debug'.
-	 */
-	status?: Status;
-
+export type LoggerOptions<E extends EventNames, A extends keyof EventActions[E]> = {
 	/**
 	 * The name of the event associated with the log.
 	 */
-	eventName?: EventNames;
+	event?: E;
+
+	/**
+	 * object of the user issuing this log
+	 */
+	user?: User | ClientUser | PartialUser;
+
+	/**
+	 * ID of the user issuing this log
+	 */
+	userId?: string;
+
+	/**
+	 * Name of user issuing this log
+	 */
+	username?: string;
 
 	/**
 	 * The name of the action that triggered the log.
 	 */
-	actionName?: ActionNames;
+	action?: A;
 
 	/**
-	 * The main message content of the log.
+	 * Function name that triggered the log call
 	 */
-	message?: string;
+	func?: string;
 
 	/**
 	 * Identifies the agent (e.g., mobile, PC, app, browser) that performed the actions leading to the log.
@@ -98,12 +111,17 @@ export default class Logger {
 	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
 	 * ------------------------------------------------------------------------------------
 	 */
-	static log(level: LogLevel, user: User | ClientUser | PartialUser, options?: LoggerOptions) {
-		print(level, user, options);
+	private static log<E extends EventNames, A extends keyof EventActions[E]>(
+		level: LogLevel,
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
 		if (options?.sendToLogChannel) {
-			const res = sendLogger(level, user, options);
+			const res = sendLogger(level, title, message, options);
 			return res;
 		}
+		print(level, title, message, options);
 		return;
 	}
 
@@ -116,8 +134,12 @@ export default class Logger {
 	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
 	 * ------------------------------------------------------------------------------------
 	 */
-	static info(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
-		Logger.log(LogLevel.INFO, user, options);
+	static info<E extends EventNames, A extends keyof EventActions[E]>(
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
+		Logger.log(LogLevel.INFO, title, message, options);
 	}
 
 	/**
@@ -129,8 +151,12 @@ export default class Logger {
 	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
 	 * ------------------------------------------------------------------------------------
 	 */
-	static success(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
-		Logger.log(LogLevel.SUCCESS, user, options);
+	static success<E extends EventNames, A extends keyof EventActions[E]>(
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
+		Logger.log(LogLevel.SUCCESS, title, message, options);
 	}
 
 	/**
@@ -142,8 +168,12 @@ export default class Logger {
 	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
 	 * ------------------------------------------------------------------------------------
 	 */
-	static debug(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
-		Logger.log(LogLevel.DEBUG, user, options);
+	static debug<E extends EventNames, A extends keyof EventActions[E]>(
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
+		Logger.log(LogLevel.DEBUG, title, message, options);
 	}
 
 	/**
@@ -155,8 +185,29 @@ export default class Logger {
 	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
 	 * ------------------------------------------------------------------------------------
 	 */
-	static warning(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
-		Logger.log(LogLevel.WARNING, user, options);
+	static warning<E extends EventNames, A extends keyof EventActions[E]>(
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
+		Logger.log(LogLevel.WARNING, title, message, options);
+	}
+
+	/**
+	 * ------------------------------------------------------------------------------------
+	 * @description Logs a danger message.
+	 * ------------------------------------------------------------------------------------
+	 * @param {User | ClientUser | PartialUser} user - The user associated with the log.
+	 * ------------------------------------------------------------------------------------
+	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
+	 * ------------------------------------------------------------------------------------
+	 */
+	static danger<E extends EventNames, A extends keyof EventActions[E]>(
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
+		Logger.log(LogLevel.DENGER, title, message, options);
 	}
 
 	/**
@@ -168,8 +219,12 @@ export default class Logger {
 	 * @param {LoggerOptions} [options] - Optional parameters for additional log details.
 	 * ------------------------------------------------------------------------------------
 	 */
-	static error(user: User | ClientUser | PartialUser, options?: LoggerOptions) {
-		Logger.log(LogLevel.ERROR, user, options);
+	static error<E extends EventNames, A extends keyof EventActions[E]>(
+		title: string,
+		message: string,
+		options?: LoggerOptions<E, A>
+	) {
+		Logger.log(LogLevel.ERROR, title, message, options);
 	}
 }
 
@@ -195,53 +250,57 @@ const line = `----------------------------------`;
  * ------------------------------------------------------------------------------------
  */
 
-function print(level: LogLevel, user: User | ClientUser | PartialUser, options?: LoggerOptions) {
+function print<E extends EventNames, A extends keyof EventActions[E]>(
+	level: LogLevel,
+	_title: string,
+	_message: string,
+	options?: LoggerOptions<E, A>
+) {
 	// Generate content
-	const emoji =
-		options?.status === 'Info'
-			? ''
-			: options?.status === 'Success'
-			? WHITE_CHECK_MARK
-			: options?.status === 'Warning'
-			? WARNING
-			: options?.status === 'Error'
-			? ROTATING_LIGHT
-			: options?.status === 'Debug'
-			? ''
-			: ''; // status is undefined;
-	const title = `${emoji}${options?.title || 'No Title'}`;
-	const actionUser = `ActionUser: ${user.id}`;
-	const actionUserTag = `ActionUserTag: ${user.tag || user.username}`;
-	const status = `Status: ${options?.status || level}`;
-	const eventName = `EventName: ${options?.eventName || '-'}`;
-	const actionName = `ActionName: ${options?.actionName || '-'}`;
-	const agent = `Agent: ${options?.agent || '-'}`;
-	const message = `Message: ${options?.message || '-'}`;
-	const datetime = `Datetime: ${options?.datetime || getDatetime()?.datetime.format('yyyy/LL/dd/HH:mm:ss')}`;
-	const content = `${line}\n${title}\n${actionUser}\n${actionUserTag}\n${status}\n${eventName}\n${actionName}\n${agent}\n${message}\n${datetime}`;
+	const emoji = STATSU_EMOJI_MAP[level];
+	const title = `Title: ${emoji}${_title || 'No Title'}`;
+	const buildOptionalString = (label: string, value?: string) => (value ? `${label}: ${value}` : '');
+	const actionUser = buildOptionalString('User', options?.user?.id || options?.userId);
+	const actionUserTag = buildOptionalString(
+		'UserTag',
+		options?.username || options?.user?.tag || options?.user?.username || ''
+	);
+	const status = buildOptionalString('Status', level);
+	const eventName = buildOptionalString('Event', options?.event);
+	const actionName = buildOptionalString('Action', options?.action?.toString());
+	const functionName = buildOptionalString('Function', options?.func);
+	const agent = buildOptionalString('Agent', options?.agent);
+	const message = buildOptionalString('Message', _message);
+	const datetime = `Datetime: ${options?.datetime || getDatetime()?.datetime.format('yyyy-LL-dd-HH:mm:ss')}`;
+	// Filter out empty strings
+	const contentParts = [
+		title,
+		actionUser,
+		actionUserTag,
+		status,
+		eventName,
+		actionName,
+		functionName,
+		agent,
+		message,
+		datetime,
+	].filter((part) => part !== '');
+	const content = [line, ...contentParts].join('\n');
 
 	// Output switched by status
-	if (!options?.status) {
-		console.log(content);
-		return;
-	}
-	if (options.status === 'Info') {
+	if (level === 'INFO' || level === 'SUCCESS') {
 		console.info(content);
 		return;
 	}
-	if (options.status === 'Success') {
-		console.log(content);
-		return;
-	}
-	if (options.status === 'Warning') {
+	if (level === 'WARNING' || level === 'DENGER') {
 		console.warn(content);
 		return;
 	}
-	if (options.status === 'Error') {
+	if (level === 'ERROR') {
 		console.error(content);
 		return;
 	}
-	if (options.status === 'Debug') {
+	if (level === 'DEBUG') {
 		console.debug(content);
 		return;
 	}
@@ -270,20 +329,20 @@ function print(level: LogLevel, user: User | ClientUser | PartialUser, options?:
  * - In case of an exception, it logs the error and returns an object with `isError` set to true and includes the error details.
  * ------------------------------------------------------------------------------------
  */
-async function sendLogger(level: LogLevel, user: User | ClientUser | PartialUser, options: LoggerOptions) {
-	const toInlineStr = (str: string | number) => `\`${str}\``;
-
+async function sendLogger<E extends EventNames, A extends keyof EventActions[E]>(
+	level: LogLevel,
+	_title: string,
+	_message: string,
+	options: LoggerOptions<E, A>
+) {
 	try {
 		// Determine which channel to post logs on
 		if (!options?.sendToLogChannel) throw new Error('sendLogToChannel is undefind');
 
 		// If Guild is null, the submission will be aborted
 		if (!options.sendToLogChannel.guild) {
-			print(level, user, {
+			print(level, 'Stop Submission', `"Guild" is null, so I stopped submitting`, {
 				...options,
-				title: 'Stop Submission',
-				status: 'Warning',
-				message: `"Guild" is null, so I stopped submitting`,
 			});
 			return;
 		}
@@ -300,45 +359,39 @@ async function sendLogger(level: LogLevel, user: User | ClientUser | PartialUser
 				  });
 		if (!logChannel) throw new Error(`LogChannel(${LOGCHANNEL_ID} || ${options.sendToLogChannel?.channel}) is undefind`);
 
+		// HelperFunctions
+		const toInlineStr = (str: string | number) => `\`${str}\``;
+		const buildOptionalDiscordString = (label: string, value?: string) => (value ? `${toInlineStr(label)}: <@${value}>` : '');
+		const buildOptionalString = (label: string, value?: string | number) => (value ? `${toInlineStr(label)}: ${value}` : '');
+
 		// Generate content
-		const emoji =
-			options.status === 'Info'
-				? ''
-				: options.status === 'Success'
-				? WHITE_CHECK_MARK
-				: options.status === 'Warning'
-				? WARNING
-				: options.status === 'Error'
-				? ROTATING_LIGHT
-				: options.status === 'Debug'
-				? ''
-				: ''; // status is undefined;
-		const title = `${emoji}${options.title || 'No Title'}`;
-		const actionUser = `${toInlineStr('ActionUser')}: <@${user.id}>`;
-		const status = `${toInlineStr('Status')}: ${options.status || level}`;
-		const eventName = `${toInlineStr('EventName')}: ${options.eventName || '-'}`;
-		const actionName = `${toInlineStr('ActionName')}: ${options.actionName || '-'}`;
-		const agent = `${toInlineStr('Agent')}: ${options.agent || '-'}`;
-		const message = `${toInlineStr('Message')}: ${options.message || '-'}`;
+		const emoji = STATSU_EMOJI_MAP[level];
+		const title = `${emoji}${_title || 'No Title'}`;
+		const actionUser = buildOptionalDiscordString('ActionUser', options.userId || options.user?.id);
+		const status = buildOptionalString('Status', level);
+		const eventName = buildOptionalString('Event', options.event);
+		const actionName = buildOptionalString('Action', options.action?.toString());
+		const functionName = buildOptionalString('Function', options.func);
+		const agent = buildOptionalString('Agent', options.agent);
+		const message = buildOptionalString('Message', _message);
 		const datetime = `${toInlineStr('Datetime')}: ${
-			options?.datetime || getDatetime()?.datetime.format('yyyy/LL/dd/HH:mm:ss')
+			options?.datetime || getDatetime()?.datetime.format('yyyy-LL-dd-HH:mm:ss')
 		}`;
+		// Filter out empty strings
+		const contentParts = [title, actionUser, status, eventName, actionName, functionName, agent, message, datetime].filter(
+			(part) => part !== ''
+		);
 
 		// Post content to channels without waiting for asynchronous processing
-		logChannel.send({
-			content: `${line}\n${title}\n${actionUser}\n${status}\n${eventName}\n${actionName}\n${agent}\n${message}\n${datetime}`,
+		const msg = await logChannel.send({
+			content: [line, ...contentParts].join('\n'),
 			...options.sendToLogChannel.options,
 		});
-		return {
-			isError: false,
-		};
+		return { isError: false, msg };
 	} catch (e: unknown) {
 		if (e instanceof Error) {
-			print(level, user, {
+			print(level, 'Send Logger Error', e.message, {
 				...options,
-				title: 'Send Logger Error',
-				status: 'Error',
-				message: e.message,
 			});
 			return {
 				isError: true,
