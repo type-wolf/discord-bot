@@ -1,11 +1,8 @@
 import { Client } from 'discord.js';
 import IntentOptions from './config/IntentOptions';
 import validateEnv from './utils/validateEnv';
-import onInteraction from './events/onInteraction';
 import onReady from './events/onReady/';
-import onGetModals from './events/onGetModals/';
-import onGetButtons from './events/onGetButtons/';
-import onGetSelectMenus from './events/onGetSelectMenus/';
+import onInteractionCreate from './events/onInteractionCreate';
 import onMessageReactionAdd from './events/onMessageReactionAdd/';
 import onMessageReactionRemove from './events/onMessageReactionRemove/';
 import onMessageCreate from './events/onMessageCreate/';
@@ -16,52 +13,47 @@ import onGuildScheduledEventCreate from './events/onGuildScheduledEventCreate';
 import onGuildScheduledEventUpdate from './events/onGuildScheduledEventUpdate';
 import onGuildScheduledEventDelete from './events/onGuildScheduledEventDelete';
 
-/**
- * @description Event handlers registered for this bot
- **/
-export type EventNames =
-	| 'onReady'
-	| 'onInteraction'
-	| 'onGetButtons'
-	| 'onGetSelectMenus'
-	| 'onGetModals'
-	| 'onGuildMemberAdd'
-	| 'onMessageCreate'
-	| 'onMessageDelete'
-	| 'onMessageReactionAdd'
-	| 'onMessageReactionRemove'
-	| 'onGuildMemberUpdate'
-	| 'onGuildScheduledEventCreate'
-	| 'onGuildScheduledEventUpdate'
-	| 'onGuildScheduledEventDelete';
+export type DefaultEventOptions = {
+	BOT: Client;
+};
 
 (async () => {
 	if (!validateEnv()) return;
 	const BOT = new Client({ intents: IntentOptions });
-	BOT.on('ready', async () => await onReady(BOT));
-	BOT.on('interactionCreate', async (interaction) => {
-		await onInteraction(interaction);
-		await onGetModals(interaction);
-		await onGetButtons(interaction);
-		await onGetSelectMenus(interaction);
+	const options: DefaultEventOptions = { BOT };
+	BOT.on('ready', async () => {
+		await onReady(BOT, options);
 	});
-	BOT.on('guildMemberAdd', async (GuildMember) => await onGuildMemberAdd(GuildMember));
-	BOT.on('messageCreate', async (message) => await onMessageCreate(message));
-	BOT.on('messageDelete', async (message) => await onMessageDelete(message));
+	BOT.on('interactionCreate', async (interaction) => {
+		await onInteractionCreate(interaction, options);
+	});
+	BOT.on('guildMemberAdd', async (GuildMember) => {
+		await onGuildMemberAdd(GuildMember, options);
+	});
+	BOT.on('messageCreate', async (message) => {
+		await onMessageCreate(message, options);
+	});
+	BOT.on('messageDelete', async (message) => {
+		await onMessageDelete(message, options);
+	});
 	BOT.on('messageReactionAdd', async (reaction, user) => {
-		await onMessageReactionAdd(reaction, user);
+		await onMessageReactionAdd(reaction, user, options);
 	});
 	BOT.on('messageReactionRemove', async (reaction, user) => {
-		await onMessageReactionRemove(reaction, user);
+		await onMessageReactionRemove(reaction, user, options);
 	});
 	BOT.on('guildMemberUpdate', async (oldMember, newMember) => {
-		await onGuildMemberUpdate(oldMember, newMember);
+		await onGuildMemberUpdate(oldMember, newMember, options);
 	});
-	BOT.on('guildScheduledEventCreate', async (guildScheduledEvent) => await onGuildScheduledEventCreate(guildScheduledEvent));
+	BOT.on('guildScheduledEventCreate', async (guildScheduledEvent) => {
+		await onGuildScheduledEventCreate(guildScheduledEvent, options);
+	});
 	BOT.on('guildScheduledEventUpdate', async (oldState, newState) => {
-		await onGuildScheduledEventUpdate(oldState, newState);
+		await onGuildScheduledEventUpdate(oldState, newState, options);
 	});
-	BOT.on('guildScheduledEventDelete', async (guildScheduledEvent) => await onGuildScheduledEventDelete(guildScheduledEvent));
+	BOT.on('guildScheduledEventDelete', async (guildScheduledEvent) => {
+		await onGuildScheduledEventDelete(guildScheduledEvent, options);
+	});
 	console.log('Launch DiscordBot ✅');
 	await BOT.login(process.env.BOT_TOKEN);
 })();

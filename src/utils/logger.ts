@@ -1,7 +1,7 @@
 import { type Guild, TextChannel, type User, type ClientUser, type PartialUser, type MessageOptions } from 'discord.js';
 import getDatetime from './getDatetime';
 import getChannelsWithCache from './getChannels';
-import type { EventNames } from '..';
+import type { EventNames } from '../constants/eventName';
 import type { EventActions } from './maintenanceManager';
 import { LOGCHANNEL_ID } from '../constants/id';
 import { MIDGET_LAMP, WHITE_CHECK_MARK, WARNING, ROTATING_LIGHT, X, HAMMER } from '../constants/emoji';
