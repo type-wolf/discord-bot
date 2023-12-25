@@ -1,11 +1,16 @@
 import { MessageReaction, User, DiscordAPIError, type PartialMessageReaction, type PartialUser } from 'discord.js';
+import maintenanceManager from '../../utils/maintenanceManager';
+import Logger from '../../utils/logger';
+import type { DefaultEventOptions } from '../..';
+import { GUILD_ID } from '../../constants/id';
+import { MAINTENANCE, USER_IS_BOT } from '../../constants/messages/info';
 
 /**
  * @description Actions registered onMessageReactionAdd
  **/
 export type OnMessageReactionAddActionNames = 'onMessageReactionAddActon1';
 
-export type OnMessageReactionAddOptions = {
+export type OnMessageReactionAddOptions = DefaultEventOptions & {
 	//
 };
 
@@ -26,11 +31,16 @@ export type OnMessageReactionAddOptions = {
 const onMessageReactionAdd = async (
 	reaction: MessageReaction | PartialMessageReaction,
 	user: User | PartialUser,
-	options?: OnMessageReactionAddOptions
+	options: OnMessageReactionAddOptions
 ) => {
-	if (user.bot) return;
-	if (!(user instanceof User)) return;
-	if (!(reaction instanceof MessageReaction)) return;
+	// Determine if this event (onMessageReactionAdd) should be executed
+	const isMaintenance = maintenanceManager.isEventInMaintenance('onMessageReactionRemove');
+	if (isMaintenance) return maintenanceHandler(user);
+	if (user.bot) return userIsBotHandler();
+
+	// Get complete user and reaction objects
+	const newUser = user instanceof User ? user : await user.fetch();
+	const newReaction = reaction instanceof MessageReaction ? reaction : await reaction.fetch();
 	try {
 		return;
 	} catch (e: unknown) {
@@ -42,5 +52,22 @@ const onMessageReactionAdd = async (
 		}
 	}
 };
+
+function maintenanceHandler(user: User | PartialUser) {
+	const guild = user.client.guilds.cache.get(GUILD_ID) || null;
+	Logger.info(MAINTENANCE.title.en, MAINTENANCE.toMessage('onMessageReactionRemove').en, {
+		user,
+		event: 'onMessageReactionAdd',
+		func: 'maintenanceHandler',
+		sendToLogChannel: { guild },
+	});
+}
+
+function userIsBotHandler() {
+	Logger.info(USER_IS_BOT.title.en, USER_IS_BOT.message.en, {
+		event: 'onMessageReactionAdd',
+		func: 'userIsBotHandler',
+	});
+}
 
 export default onMessageReactionAdd;

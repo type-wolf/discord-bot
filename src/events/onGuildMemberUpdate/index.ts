@@ -1,11 +1,16 @@
-import { DiscordAPIError, type GuildMember, type PartialGuildMember } from 'discord.js';
+import { DiscordAPIError, type User, type GuildMember, type PartialGuildMember } from 'discord.js';
+import maintenanceManager from '../../utils/maintenanceManager';
+import Logger from '../../utils/logger';
+import type { DefaultEventOptions } from '../..';
+import { GUILD_ID } from '../../constants/id';
+import { MAINTENANCE, USER_IS_BOT } from '../../constants/messages/info';
 
 /**
  * @description Actions registered onGuildMemberUpdate
  **/
 export type OnGuildMemberUpdateActionNames = 'onGuildMemberUpdateAction1';
 
-export type OnGuildMemberUpdateOptions = {
+export type OnGuildMemberUpdateOptions = DefaultEventOptions & {
 	//
 };
 
@@ -26,8 +31,14 @@ export type OnGuildMemberUpdateOptions = {
 const onGuildMemberUpdate = async (
 	oldState: GuildMember | PartialGuildMember,
 	newState: GuildMember,
-	options?: OnGuildMemberUpdateOptions
+	options: OnGuildMemberUpdateOptions
 ) => {
+	// Determine if this event (onGuildMemberUpdate) should be executed
+	const isMaintenance = maintenanceManager.isEventInMaintenance('onGuildMemberUpdate');
+	if (isMaintenance) return maintenanceHandler(newState.user);
+	if (newState.user.bot) return userIsBotHandler();
+
+	// Execute the Action set in onGuildMemberUpdate
 	try {
 		return;
 	} catch (e: unknown) {
@@ -39,5 +50,21 @@ const onGuildMemberUpdate = async (
 		}
 	}
 };
+
+function userIsBotHandler() {
+	Logger.info(USER_IS_BOT.title.en, USER_IS_BOT.message.en, {
+		event: 'onMessageReactionAdd',
+		func: 'userIsBotHandler',
+	});
+}
+
+function maintenanceHandler(user: User) {
+	const guild = user.client.guilds.cache.get(GUILD_ID) || null;
+	Logger.info(MAINTENANCE.title.en, MAINTENANCE.toMessage('onGuildMemberUpdate').en, {
+		event: 'onGuildMemberUpdate',
+		func: 'maintenanceHandler',
+		sendToLogChannel: { guild },
+	});
+}
 
 export default onGuildMemberUpdate;

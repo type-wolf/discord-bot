@@ -1,11 +1,16 @@
-import { DiscordAPIError, type GuildScheduledEvent } from 'discord.js';
+import { DiscordAPIError, type User, type GuildScheduledEvent } from 'discord.js';
+import maintenanceManager from '../../utils/maintenanceManager';
+import Logger from '../../utils/logger';
+import type { DefaultEventOptions } from '../..';
+import { GUILD_ID } from '../../constants/id';
+import { MAINTENANCE, NO_SCHEDULE_CREATOR } from '../../constants/messages/info';
 
 /**
  * @description Actions registered onGuildScheduledEventUpdate
  **/
 export type OnGuildScheduledEventUpdateActionNames = 'onGuildScheduledEventUpdateAction1';
 
-export type OnGuildScheduledEventUpdateOptions = {
+export type OnGuildScheduledEventUpdateOptions = DefaultEventOptions & {
 	//
 };
 
@@ -26,8 +31,14 @@ export type OnGuildScheduledEventUpdateOptions = {
 const onGuildScheduledEventUpdate = async (
 	oldState: GuildScheduledEvent,
 	newState: GuildScheduledEvent,
-	options?: OnGuildScheduledEventUpdateOptions
+	options: OnGuildScheduledEventUpdateOptions
 ) => {
+	// Determine if this event (onGuildScheduledEventUpdate) should be executed
+	if (!newState.creator) return notCreatorHandler(newState);
+	const isMaintenance = maintenanceManager.isEventInMaintenance('onGuildScheduledEventUpdate');
+	if (isMaintenance) return maintenanceHandler(newState.creator);
+
+	// Execute the Action set in onGuildScheduledEventUpdate
 	try {
 		return;
 	} catch (e: unknown) {
@@ -39,5 +50,23 @@ const onGuildScheduledEventUpdate = async (
 		}
 	}
 };
+
+function notCreatorHandler(newState: GuildScheduledEvent) {
+	Logger.info(NO_SCHEDULE_CREATOR.title.en, NO_SCHEDULE_CREATOR.toMessage(newState.name).en, {
+		event: 'onGuildScheduledEventUpdate',
+		func: 'notCreatorHandler',
+		sendToLogChannel: { guild: newState.guild },
+	});
+}
+
+function maintenanceHandler(user: User) {
+	const guild = user.client.guilds.cache.get(GUILD_ID) || null;
+	Logger.info(MAINTENANCE.title.en, MAINTENANCE.toMessage('onGuildScheduledEventUpdate').en, {
+		user,
+		event: 'onGuildScheduledEventUpdate',
+		func: 'maintenanceHandler',
+		sendToLogChannel: { guild },
+	});
+}
 
 export default onGuildScheduledEventUpdate;

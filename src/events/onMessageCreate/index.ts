@@ -1,11 +1,16 @@
-import { DiscordAPIError, type Message } from 'discord.js';
+import { DiscordAPIError, type User, type Message } from 'discord.js';
+import maintenanceManager from '../../utils/maintenanceManager';
+import Logger from '../../utils/logger';
+import type { DefaultEventOptions } from '../..';
+import { GUILD_ID } from '../../constants/id';
+import { MAINTENANCE, MESSAGE_AUTHOR_IS_BOT } from '../../constants/messages/info';
 
 /**
  * @description Actions registered onMessageCreate
  **/
 export type OnMessageCreateActionNames = 'onMessageCreateAction1';
 
-export type OnMessageCreateOptions = {
+export type OnMessageCreateOptions = DefaultEventOptions & {
 	//
 };
 
@@ -22,8 +27,11 @@ export type OnMessageCreateOptions = {
  *
  **/
 
-const onMessageCreate = async (message: Message, options?: OnMessageCreateOptions) => {
-	if (message.author.bot) return;
+const onMessageCreate = async (message: Message, options: OnMessageCreateOptions) => {
+	// Determine if this evenonMessageCreate) should be executed
+	const isMaintenance = maintenanceManager.isEventInMaintenance('onMessageDelete');
+	if (isMaintenance) return maintenanceHandler(message.author);
+	if (message.author.bot) return authorIsBotHandler();
 	try {
 		return;
 	} catch (e: unknown) {
@@ -35,5 +43,22 @@ const onMessageCreate = async (message: Message, options?: OnMessageCreateOption
 		}
 	}
 };
+
+function maintenanceHandler(user: User) {
+	const guild = user.client.guilds.cache.get(GUILD_ID) || null;
+	Logger.info(MAINTENANCE.title.en, MAINTENANCE.toMessage('onMessageDelete').en, {
+		user,
+		event: 'onMessageDelete',
+		func: 'maintenanceHandler',
+		sendToLogChannel: { guild },
+	});
+}
+
+function authorIsBotHandler() {
+	Logger.info(MESSAGE_AUTHOR_IS_BOT.title.en, MESSAGE_AUTHOR_IS_BOT.toMessage().en, {
+		event: 'onMessageCreate',
+		func: 'authorIsBotHandler',
+	});
+}
 
 export default onMessageCreate;
