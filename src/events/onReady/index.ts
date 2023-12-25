@@ -9,6 +9,7 @@ import { MAINTENANCE } from '../../constants/messages';
  * Actions registered onReady
  **/
 export type OnReadyActionNames = 'addSlashCommand';
+export const onReadyActionNames: OnReadyActionNames[] = ['addSlashCommand'];
 
 export type OnReadyOptions = DefaultEventOptions & {
 	// Add Options

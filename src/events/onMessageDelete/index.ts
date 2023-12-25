@@ -9,6 +9,7 @@ import { MAINTENANCE, MESSAGE_AUTHOR_IS_BOT } from '../../constants/messages/inf
  * @description Actions registered onMessageDelete
  **/
 export type OnMessageDeleteActionNames = 'onMessageDeleteAction1';
+export const onMessageDeleteActionNames: OnMessageDeleteActionNames[] = ['onMessageDeleteAction1'];
 
 export type OnMessageDeleteOptions = DefaultEventOptions & {
 	//

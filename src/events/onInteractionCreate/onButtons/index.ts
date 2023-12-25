@@ -7,7 +7,8 @@ import { MAINTENANCE } from '../../../constants/messages/info';
 /**
  * @description Actions registered onGetButtons
  **/
-export type OnButtonActionNames = 'onGetButtonAction1';
+export type OnButtonActionNames = 'onButtonAction1';
+export const onButtonActionNames: OnButtonActionNames[] = ['onButtonAction1'];
 
 export type OnButtonOptions = OnInteractionCreateOptions & {
 	//

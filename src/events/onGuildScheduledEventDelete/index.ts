@@ -9,6 +9,9 @@ import { GUILD_ID } from '../../constants/id';
  * @description Actions registered onGuildScheduledEventDalete
  **/
 export type OnGuildScheduledEventDeleteActionNames = 'onGuildScheduledEventDaleteActon1';
+export const onGuildScheduledEventDeleteActionNames: OnGuildScheduledEventDeleteActionNames[] = [
+	'onGuildScheduledEventDaleteActon1',
+];
 
 export type OnGuildScheduledEventDeleteOptions = DefaultEventOptions & {
 	//

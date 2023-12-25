@@ -9,6 +9,7 @@ import { MAINTENANCE, USER_IS_BOT } from '../../constants/messages/info';
  * @description Actions registered onGuildMemberUpdate
  **/
 export type OnGuildMemberUpdateActionNames = 'onGuildMemberUpdateAction1';
+export const onGuildMemberUpdateActionNames: OnGuildMemberUpdateActionNames[] = ['onGuildMemberUpdateAction1'];
 
 export type OnGuildMemberUpdateOptions = DefaultEventOptions & {
 	//

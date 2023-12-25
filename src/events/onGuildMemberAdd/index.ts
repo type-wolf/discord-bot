@@ -10,6 +10,8 @@ import { MAINTENANCE, USER_IS_BOT } from '../../constants/messages/info';
  **/
 export type OnGuildMemberAddActionNames = 'onGuildMemberAddAction1';
 
+export const onGuildMemberAddActionNames: OnGuildMemberAddActionNames[] = ['onGuildMemberAddAction1'];
+
 export type OnGuildMemberAddOptions = DefaultEventOptions & {
 	//
 };

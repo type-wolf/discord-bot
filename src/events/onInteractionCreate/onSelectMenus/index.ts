@@ -7,7 +7,8 @@ import { MAINTENANCE } from '../../../constants/messages/info';
 /**
  * @description Actions registered onSelectMenus
  **/
-export type OnSelectMenuActionNames = 'onGetSelectMenuAction1';
+export type OnSelectMenuActionNames = 'onSelectMenuAction1';
+export const onSelectMenuActionNames: OnSelectMenuActionNames[] = ['onSelectMenuAction1'];
 
 export type OnSelectMenuOptions = OnInteractionCreateOptions & {
 	//

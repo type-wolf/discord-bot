@@ -9,6 +9,12 @@ import onModalSubmits from './onModalSubmits';
 import { MAINTENANCE } from '../../constants/messages/info';
 
 export type OnInteractionCreateActionNames = 'onInteraction' | 'onButtons' | 'onSelectMenus' | 'onModalSubmits';
+export const onInteractionCreateActionNames: OnInteractionCreateActionNames[] = [
+	'onInteraction',
+	'onButtons',
+	'onSelectMenus',
+	'onModalSubmits',
+];
 
 export type OnInteractionCreateOptions = DefaultEventOptions & {
 	// Add Options

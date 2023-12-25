@@ -9,6 +9,7 @@ import { MAINTENANCE, MESSAGE_AUTHOR_IS_BOT } from '../../constants/messages/inf
  * @description Actions registered onMessageCreate
  **/
 export type OnMessageCreateActionNames = 'onMessageCreateAction1';
+export const onMessageCreateActionNames: OnMessageCreateActionNames[] = ['onMessageCreateAction1'];
 
 export type OnMessageCreateOptions = DefaultEventOptions & {
 	//

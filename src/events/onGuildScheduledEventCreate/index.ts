@@ -9,6 +9,9 @@ import { GUILD_ID } from '../../constants/id';
  * @description Actions registered onGuildScheduledEventCreate
  **/
 export type OnGuildScheduledEventCreateActionNames = 'onGuildScheduledEventCreateAction1';
+export const onGuildScheduledEventCreateActionNames: OnGuildScheduledEventCreateActionNames[] = [
+	'onGuildScheduledEventCreateAction1',
+];
 
 export type OnGuildScheduleEventCreateOptions = DefaultEventOptions & {
 	//

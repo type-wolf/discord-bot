@@ -9,6 +9,7 @@ import { MAINTENANCE, USER_IS_BOT } from '../../constants/messages/info';
  * @description Actions registered onMessageReactionRemove
  **/
 export type OnMessageReactionRemoveActionNames = 'onMessageReactionRemoveAction1';
+export const onMessageReactionRemoveActionNames: OnMessageReactionRemoveActionNames[] = ['onMessageReactionRemoveAction1'];
 
 export type OnMessaageReactionRemoveOptions = DefaultEventOptions & {
 	//

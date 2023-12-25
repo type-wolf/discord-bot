@@ -7,7 +7,8 @@ import { MAINTENANCE } from '../../../constants/messages/info';
 /**
  * @description Actions registered onModals
  **/
-export type OnModalSubmitActionNames = 'onGetModalAction1';
+export type OnModalSubmitActionNames = 'onModalAction1';
+export const onModalSubmitActionNames: OnModalSubmitActionNames[] = ['onModalAction1'];
 
 export type OnModalSubmitOptions = OnInteractionCreateOptions & {
 	//

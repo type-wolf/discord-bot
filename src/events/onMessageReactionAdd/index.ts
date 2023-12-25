@@ -9,6 +9,7 @@ import { MAINTENANCE, USER_IS_BOT } from '../../constants/messages/info';
  * @description Actions registered onMessageReactionAdd
  **/
 export type OnMessageReactionAddActionNames = 'onMessageReactionAddActon1';
+export const onMessageReactionAddActionNames: OnMessageReactionAddActionNames[] = ['onMessageReactionAddActon1'];
 
 export type OnMessageReactionAddOptions = DefaultEventOptions & {
 	//
