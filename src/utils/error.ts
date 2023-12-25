@@ -1,8 +1,8 @@
 import getDatetime from './getDatetime';
 import type { LoggerOptions } from './logger';
-import type { EventNames } from '..';
+import type { EventNames } from '../constants/eventName';
 import type { EventActions } from './maintenanceManager';
-import ERRORS, { type ErrorCode } from '../constants/error';
+import { ERRORS, type ErrorCode } from '../constants/messages';
 
 export type BotErrorOptions<E extends EventNames, A extends keyof EventActions[E]> = LoggerOptions<E, A> & {
 	/**
@@ -42,7 +42,7 @@ export type BotErrorOptions<E extends EventNames, A extends keyof EventActions[E
 export default class BotError<E extends EventNames, A extends keyof EventActions[E]> extends Error {
 	public readonly code: ErrorCode;
 	public readonly options?: BotErrorOptions<E, A>;
-	constructor(code: ErrorCode = 'UNKNOWN_ERROR', options?: BotErrorOptions<E, A>) {
+	constructor(code: ErrorCode = 'UNKNOWN', options?: BotErrorOptions<E, A>) {
 		const message = options?.message || ERRORS[code].message[options?.language || 'en'];
 		super(message);
 		this.name = this.constructor.name;
