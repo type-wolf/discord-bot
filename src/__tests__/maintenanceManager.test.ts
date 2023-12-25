@@ -1,13 +1,14 @@
-import type { EventNames } from '..';
+import type { EventNames } from '../constants/eventName';
 import type { OnReadyActionNames } from '../events/onReady';
 import maintenanceManager from '../utils/maintenanceManager';
 
 const eventNames: EventNames[] = [
 	'onReady',
-	'onInteraction',
-	'onGetButtons',
-	'onGetSelectMenus',
-	'onGetModals',
+	'onInteractionCreate',
+	'onInteractions',
+	'onButtons',
+	'onSelectMenus',
+	'onModalSubmits',
 	'onMessageCreate',
 	'onMessageDelete',
 	'onMessageReactionAdd',

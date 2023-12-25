@@ -1,9 +1,10 @@
-import type { EventNames } from '..';
+import type { EventNames } from '../constants/eventName';
 import type { OnReadyActionNames } from '../events/onReady';
-import type { OnInteractionActionNames } from '../commands/_CommandList';
-import type { OnGetButtonsActionNames } from '../events/onGetButtons';
-import type { OnGetSelectMenusActionNames } from '../events/onGetSelectMenus';
-import type { OnGetModalsActionNames } from '../events/onGetModals';
+import type { OnInteractionCreateActionNames } from '../events/onInteractionCreate';
+import type { OnInteractionActionNames } from '../events/onInteractionCreate/onInteractions';
+import type { OnButtonActionNames } from '../events/onInteractionCreate/onButtons';
+import type { OnSelectMenuActionNames } from '../events/onInteractionCreate/onSelectMenus';
+import type { OnModalSubmitActionNames } from '../events/onInteractionCreate/onModalSubmits';
 import type { OnGuildMemberAddActionNames } from '../events/onGuildMemberAdd';
 import type { OnMessageCreateActionNames } from '../events/onMessageCreate';
 import type { OnMessageDeleteActionNames } from '../events/onMessageDelete';
@@ -24,9 +25,9 @@ import type { OnGuildScheduledEventDeleteActionNames } from '../events/onGuildSc
 export type ActionNames =
 	| OnReadyActionNames
 	| OnInteractionActionNames
-	| OnGetButtonsActionNames
-	| OnGetSelectMenusActionNames
-	| OnGetModalsActionNames
+	| OnButtonActionNames
+	| OnSelectMenuActionNames
+	| OnModalSubmitActionNames
 	| OnGuildMemberAddActionNames
 	| OnGuildMemberUpdateActionNames
 	| OnMessageCreateActionNames
@@ -46,10 +47,11 @@ export type ActionNames =
  */
 export type EventActions = {
 	onReady: Record<OnReadyActionNames, boolean>;
-	onInteraction: Record<OnInteractionActionNames, boolean>;
-	onGetButtons: Record<OnGetButtonsActionNames, boolean>;
-	onGetSelectMenus: Record<OnGetSelectMenusActionNames, boolean>;
-	onGetModals: Record<OnGetModalsActionNames, boolean>;
+	onInteractionCreate: Record<OnInteractionCreateActionNames, boolean>;
+	onInteractions: Record<OnInteractionActionNames, boolean>;
+	onButtons: Record<OnButtonActionNames, boolean>;
+	onSelectMenus: Record<OnSelectMenuActionNames, boolean>;
+	onModalSubmits: Record<OnModalSubmitActionNames, boolean>;
 	onGuildMemberAdd: Record<OnGuildMemberAddActionNames, boolean>;
 	onGuildMemberUpdate: Record<OnGuildMemberUpdateActionNames, boolean>;
 	onMessageCreate: Record<OnMessageCreateActionNames, boolean>;
