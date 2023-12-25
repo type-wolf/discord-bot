@@ -11,7 +11,7 @@ describe('Discord Bot', () => {
 
 	it('onReady should be called when DiscordBot is started', async () => {
 		const mockOnReady = jest.fn(onReady);
-		await mockOnReady(bot);
+		await mockOnReady(bot, { BOT: bot });
 		expect(mockOnReady).toHaveBeenCalled();
 	});
 
