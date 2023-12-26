@@ -6,7 +6,7 @@ describe('BotError', () => {
 	it('should create an instance of BotError with default properties', () => {
 		const error = new BotError();
 		expect(error).toBeInstanceOf(BotError);
-		expect(error.code).toBe('UNKNOWN_ERROR');
+		expect(error.code).toBe('UNKNOWN');
 		expect(error.message).toBe(ERRORS['UNKNOWN'].message.en);
 	});
 
