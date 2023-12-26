@@ -32,3 +32,28 @@ GUILD_ID=
 
 -   `Require`: true
 -   `description`: The ID of the GUILD where you plan to install the bot you created
+
+### **Step2**: Set environment variables for the repository
+
+-   Go to 'Secrets and variables' in the repository settings
+
+#### HEROKU_API_KEY
+
+-   `Require`: true
+-   `description`: Heroku ApiKey provided for each account
+-   `GetStep`
+    -   Step1: Access [HerokuDashboard](https://dashboard.heroku.com/account)
+    -   Step2: Scroll to the bottom and find 'ApiKey' and copy it
+
+#### HEROKU_APP_NAME
+
+-   `Require`: true
+-   `description`: Name of Heroku app to be automatically deployed
+-   `GetStep`
+    -   Step1: Access [HerokuMyApps](https://dashboard.heroku.com/apps)
+    -   Step2: Set a name for your app (create one if you don't have one)
+
+#### HEROKU_EMAIL
+
+-   `Require`: true
+-   `description`: Email address of the Heroku account you are using
