@@ -1,5 +1,4 @@
 import {
-	DiscordAPIError,
 	MessageActionRow,
 	type ModalActionRowComponent,
 	type MessageButton,
@@ -7,49 +6,28 @@ import {
 	type TextInputComponent,
 } from 'discord.js';
 
-export type MessageComponentsType = (MessageButton | MessageSelectMenu) | (MessageButton[] | MessageSelectMenu[]);
+export type MessageComponents = (MessageButton | MessageSelectMenu) | (MessageButton[] | MessageSelectMenu[]);
 
-export type ModalComponentsType = TextInputComponent | TextInputComponent[];
+export type ModalComponents = TextInputComponent | TextInputComponent[];
 
-export const addMessageActionRow = (components: MessageComponentsType) => {
+export const messageActionRow = (components: MessageComponents) => {
 	const actionRow = new MessageActionRow();
-	try {
-		if (Array.isArray(components)) {
-			actionRow.addComponents(...components);
-		} else {
-			actionRow.addComponents(components);
-		}
-		return actionRow;
-	} catch (e: unknown) {
-		if (e instanceof DiscordAPIError) {
-			return undefined;
-		}
-		if (e instanceof Error) {
-			return undefined;
-		}
+	if (Array.isArray(components)) {
+		actionRow.addComponents(...components);
+	} else {
+		actionRow.addComponents(components);
 	}
+	return actionRow;
 };
 
-export const addModalActionRow = (components: ModalComponentsType) => {
+export const modalActionRow = (components: ModalComponents) => {
 	const actionRow = new MessageActionRow<ModalActionRowComponent>();
-	try {
-		if (Array.isArray(components)) {
-			actionRow.addComponents(...components);
-		} else {
-			actionRow.addComponents(components);
-		}
-		return actionRow;
-	} catch (e: unknown) {
-		if (e instanceof DiscordAPIError) {
-			return undefined;
-		}
-		if (e instanceof Error) {
-			return undefined;
-		}
+	if (Array.isArray(components)) {
+		actionRow.addComponents(...components);
+	} else {
+		actionRow.addComponents(components);
 	}
+	return actionRow;
 };
 
-export default {
-	addMessageActionRow,
-	addModalActionRow,
-};
+export default { messageActionRow, modalActionRow };
