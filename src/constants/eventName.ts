@@ -18,7 +18,7 @@ export type EventNames =
 	| 'onGuildScheduledEventUpdate'
 	| 'onGuildScheduledEventDelete';
 
-const eventNames = [
+const eventNames: EventNames[] = [
 	'onReady',
 	'onInteractionCreate',
 	'onInteractions',

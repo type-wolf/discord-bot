@@ -1,19 +1,28 @@
 import type { EventNames } from '../constants/eventName';
-import type { OnReadyActionNames } from '../events/onReady';
-import type { OnInteractionCreateActionNames } from '../events/onInteractionCreate';
-import type { OnInteractionActionNames } from '../events/onInteractionCreate/onInteractions';
-import type { OnButtonActionNames } from '../events/onInteractionCreate/onButtons';
-import type { OnSelectMenuActionNames } from '../events/onInteractionCreate/onSelectMenus';
-import type { OnModalSubmitActionNames } from '../events/onInteractionCreate/onModalSubmits';
-import type { OnGuildMemberAddActionNames } from '../events/onGuildMemberAdd';
-import type { OnMessageCreateActionNames } from '../events/onMessageCreate';
-import type { OnMessageDeleteActionNames } from '../events/onMessageDelete';
-import type { OnMessageReactionAddActionNames } from '../events/onMessageReactionAdd';
-import type { OnMessageReactionRemoveActionNames } from '../events/onMessageReactionRemove';
-import type { OnGuildMemberUpdateActionNames } from '../events/onGuildMemberUpdate';
-import type { OnGuildScheduledEventCreateActionNames } from '../events/onGuildScheduledEventCreate';
-import type { OnGuildScheduledEventUpdateActionNames } from '../events/onGuildScheduledEventUpdate';
-import type { OnGuildScheduledEventDeleteActionNames } from '../events/onGuildScheduledEventDelete';
+import { onReadyActionNames, type OnReadyActionNames } from '../events/onReady';
+import { onInteractionCreateActionNames, type OnInteractionCreateActionNames } from '../events/onInteractionCreate';
+import { onInteractionActionNames, type OnInteractionActionNames } from '../events/onInteractionCreate/onInteractions';
+import { onButtonActionNames, type OnButtonActionNames } from '../events/onInteractionCreate/onButtons';
+import { onSelectMenuActionNames, type OnSelectMenuActionNames } from '../events/onInteractionCreate/onSelectMenus';
+import { onModalSubmitActionNames, type OnModalSubmitActionNames } from '../events/onInteractionCreate/onModalSubmits';
+import { onGuildMemberAddActionNames, type OnGuildMemberAddActionNames } from '../events/onGuildMemberAdd';
+import { onMessageCreateActionNames, type OnMessageCreateActionNames } from '../events/onMessageCreate';
+import { onMessageDeleteActionNames, type OnMessageDeleteActionNames } from '../events/onMessageDelete';
+import { onMessageReactionAddActionNames, type OnMessageReactionAddActionNames } from '../events/onMessageReactionAdd';
+import { onMessageReactionRemoveActionNames, type OnMessageReactionRemoveActionNames } from '../events/onMessageReactionRemove';
+import { onGuildMemberUpdateActionNames, type OnGuildMemberUpdateActionNames } from '../events/onGuildMemberUpdate';
+import {
+	onGuildScheduledEventCreateActionNames,
+	type OnGuildScheduledEventCreateActionNames,
+} from '../events/onGuildScheduledEventCreate';
+import {
+	onGuildScheduledEventUpdateActionNames,
+	type OnGuildScheduledEventUpdateActionNames,
+} from '../events/onGuildScheduledEventUpdate';
+import {
+	onGuildScheduledEventDeleteActionNames,
+	type OnGuildScheduledEventDeleteActionNames,
+} from '../events/onGuildScheduledEventDelete';
 
 /**
  * ------------------------------------------------------------------------------------
@@ -24,6 +33,7 @@ import type { OnGuildScheduledEventDeleteActionNames } from '../events/onGuildSc
  */
 export type ActionNames =
 	| OnReadyActionNames
+	| OnInteractionCreateActionNames
 	| OnInteractionActionNames
 	| OnButtonActionNames
 	| OnSelectMenuActionNames
@@ -61,6 +71,24 @@ export type EventActions = {
 	onGuildScheduledEventCreate: Record<OnGuildScheduledEventCreateActionNames, boolean>;
 	onGuildScheduledEventUpdate: Record<OnGuildScheduledEventUpdateActionNames, boolean>;
 	onGuildScheduledEventDelete: Record<OnGuildScheduledEventDeleteActionNames, boolean>;
+};
+
+export const eventActions = {
+	onReady: onReadyActionNames,
+	onInteractionCreate: onInteractionCreateActionNames,
+	onInteractions: onInteractionActionNames,
+	onButtons: onButtonActionNames,
+	onSelectMenus: onSelectMenuActionNames,
+	onModalSubmits: onModalSubmitActionNames,
+	onGuildMemberAdd: onGuildMemberAddActionNames,
+	onGuildMemberUpdate: onGuildMemberUpdateActionNames,
+	onMessageCreate: onMessageCreateActionNames,
+	onMessageDelete: onMessageDeleteActionNames,
+	onMessageReactionAdd: onMessageReactionAddActionNames,
+	onMessageReactionRemove: onMessageReactionRemoveActionNames,
+	onGuildScheduledEventCreate: onGuildScheduledEventCreateActionNames,
+	onGuildScheduledEventUpdate: onGuildScheduledEventUpdateActionNames,
+	onGuildScheduledEventDelete: onGuildScheduledEventDeleteActionNames,
 };
 
 /**
