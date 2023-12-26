@@ -9,8 +9,8 @@ import { MAINTENANCE } from '../../../constants/messages/info';
 /**
  * @description Actions registered onInteraction
  **/
-export type OnInteractionActionNames = 'maintenance';
-export const onInteractionActionName: OnInteractionActionNames[] = ['maintenance'];
+export type OnInteractionActionNames = 'maintenance.view_state' | 'maintenance.set_state';
+export const onInteractionActionNames: OnInteractionActionNames[] = ['maintenance.view_state', 'maintenance.set_state'];
 
 export type CommandProps = {
 	builder: Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'> | SlashCommandSubcommandsOnlyBuilder;

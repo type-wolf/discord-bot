@@ -2,13 +2,15 @@ import { DiscordAPIError, type SelectMenuInteraction, type Interaction } from 'd
 import maintenanceManager from '../../../utils/maintenanceManager';
 import Logger from '../../../utils/logger';
 import type { OnInteractionCreateOptions } from '../../onInteractionCreate';
+import setState from './setState';
+import eventNames, { type EventNames } from '../../../constants/eventName';
 import { MAINTENANCE } from '../../../constants/messages/info';
 
 /**
  * @description Actions registered onSelectMenus
  **/
-export type OnSelectMenuActionNames = 'onSelectMenuAction1';
-export const onSelectMenuActionNames: OnSelectMenuActionNames[] = ['onSelectMenuAction1'];
+export type OnSelectMenuActionNames = 'setState';
+export const onSelectMenuActionNames: OnSelectMenuActionNames[] = ['setState'];
 
 export type OnSelectMenuOptions = OnInteractionCreateOptions & {
 	//
@@ -34,7 +36,7 @@ const onSelectMenus = async (interaction: Interaction, options: OnSelectMenuOpti
 
 	// Execute the Action set in onSelectMenus
 	try {
-		if (interaction.customId === 'CustomSelectMenuId') console.log('SelectMenuAction');
+		if (eventNames.includes(interaction.customId as EventNames)) return await setState(interaction, options);
 		return;
 	} catch (e: unknown) {
 		if (e instanceof DiscordAPIError) {
